@@ -24,9 +24,9 @@ hospital-readmission-ml/
     README.md             (sobre el dataset)
   notebooks/
     01_EDA.ipynb
-    02_
-    03_
-    04_
+    02_Models.ipynb
+    03_DL.ipynb
+    04_SHAP.ipynb
     readmision_hospitalaria_colab.ipynb
   backend/                Directorio provisorio para siguiente etapa de montaje en web
     main.py
