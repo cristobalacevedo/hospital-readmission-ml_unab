@@ -98,4 +98,5 @@ Abrir en el navegador: http://localhost:3000
 
 ## Equipo
 
-Proyecto grupal — ACIF104 Aprendizaje de Máquina NRC 2182 — UNAB 2025
+Proyecto grupal — ACIF104 Aprendizaje de Máquina NRC 2182 — UNAB 2026
+
