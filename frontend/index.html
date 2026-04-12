@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predicción de Readmisión Hospitalaria</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>🏥 Predicción de Readmisión Hospitalaria</h1>
+      <p class="subtitle">Pacientes con diabetes mellitus · Modelo: Random Forest + SHAP · ACIF104</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- Formulario de datos del paciente -->
+      <section class="card" id="form-section">
+        <h2>📋 Datos del Paciente</h2>
+        <form id="patient-form">
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="time_in_hospital">Días de hospitalización (1–14)</label>
+              <input type="number" id="time_in_hospital" min="1" max="14" value="5" required />
+            </div>
+
+            <div class="form-group">
+              <label for="n_lab_procedures">Procedimientos de laboratorio</label>
+              <input type="number" id="n_lab_procedures" min="0" max="150" value="45" required />
+            </div>
+
+            <div class="form-group">
+              <label for="n_procedures">Procedimientos clínicos</label>
+              <input type="number" id="n_procedures" min="0" max="10" value="1" required />
+            </div>
+
+            <div class="form-group">
+              <label for="n_medications">Medicamentos prescritos</label>
+              <input type="number" id="n_medications" min="0" max="100" value="18" required />
+            </div>
+
+            <div class="form-group">
+              <label for="n_outpatient">Visitas ambulatorias previas</label>
+              <input type="number" id="n_outpatient" min="0" max="50" value="0" required />
+            </div>
+
+            <div class="form-group highlight">
+              <label for="n_inpatient">⭐ Hospitalizaciones previas (predictor clave)</label>
+              <input type="number" id="n_inpatient" min="0" max="20" value="2" required />
+            </div>
+
+            <div class="form-group">
+              <label for="n_emergency">Visitas a urgencias previas</label>
+              <input type="number" id="n_emergency" min="0" max="70" value="0" required />
+            </div>
+
+            <div class="form-group">
+              <label for="age_enc">Grupo etario (0=[40-50) … 5=[90-100))</label>
+              <select id="age_enc" required>
+                <option value="0">[40–50)</option>
+                <option value="1">[50–60)</option>
+                <option value="2">[60–70)</option>
+                <option value="3" selected>[70–80)</option>
+                <option value="4">[80–90)</option>
+                <option value="5">[90–100)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="glucose_test_enc">Test de glucosa</label>
+              <select id="glucose_test_enc" required>
+                <option value="0" selected>Sin test</option>
+                <option value="1">Normal</option>
+                <option value="2">Alto</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="A1Ctest_enc">Test HbA1c</label>
+              <select id="A1Ctest_enc" required>
+                <option value="0">Sin test</option>
+                <option value="1">Normal</option>
+                <option value="2" selected>Alto</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="change_enc">Cambio de medicamento durante la hospitalización</label>
+              <select id="change_enc" required>
+                <option value="0">No</option>
+                <option value="1" selected>Sí</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="diabetes_med_enc">Recibió medicamento para diabetes</label>
+              <select id="diabetes_med_enc" required>
+                <option value="0">No</option>
+                <option value="1" selected>Sí</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="medical_specialty_enc">Especialidad médica</label>
+              <select id="medical_specialty_enc" required>
+                <option value="0">Sin especialidad</option>
+                <option value="1">Medicina Interna</option>
+                <option value="2">Otra</option>
+                <option value="3" selected>Urgencias/Trauma</option>
+                <option value="4">Medicina Familiar</option>
+                <option value="5">Cardiología</option>
+                <option value="6">Cirugía</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="diag_1_enc">Diagnóstico primario</label>
+              <select id="diag_1_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1">Otro</option>
+                <option value="2" selected>Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4">Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="diag_2_enc">Diagnóstico secundario</label>
+              <select id="diag_2_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1" selected>Otro</option>
+                <option value="2">Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4">Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="diag_3_enc">Diagnóstico terciario</label>
+              <select id="diag_3_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1">Otro</option>
+                <option value="2">Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4" selected>Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+
+          </div>
+
+          <button type="submit" class="btn-predict" id="btn-predict">
+            🔍 Predecir riesgo de readmisión
+          </button>
+        </form>
+      </section>
+
+      <!-- Panel de resultado -->
+      <section class="card" id="result-section" style="display:none;">
+        <h2>📊 Resultado de la Predicción</h2>
+
+        <div id="risk-indicator" class="risk-indicator">
+          <div id="risk-icon" class="risk-icon"></div>
+          <div id="risk-text" class="risk-text"></div>
+          <div id="prob-text" class="prob-text"></div>
+        </div>
+
+        <div id="risk-label-box" class="risk-label-box"></div>
+
+        <!-- Barra de probabilidad -->
+        <div class="prob-bar-container">
+          <div class="prob-bar-label">Probabilidad de readmisión</div>
+          <div class="prob-bar-track">
+            <div id="prob-bar-fill" class="prob-bar-fill"></div>
+          </div>
+          <div class="prob-bar-ticks">
+            <span>0 %</span><span>25 %</span><span>50 %</span><span>75 %</span><span>100 %</span>
+          </div>
+        </div>
+
+        <!-- Gráfico SHAP -->
+        <h3>🧠 Explicación SHAP — Factores más influyentes</h3>
+        <p class="shap-note">
+          Los valores positivos (azul) aumentan el riesgo de readmisión; los negativos (rojo) lo reducen.
+        </p>
+        <div id="shap-chart"></div>
+
+        <button class="btn-reset" onclick="resetForm()">↩ Nueva predicción</button>
+        <p class="timestamp-text" id="timestamp-text"></p>
+      </section>
+
+      <!-- Panel de monitoreo -->
+      <section class="card" id="monitor-section">
+        <h2>📈 Monitoreo del Modelo</h2>
+        <button class="btn-monitor" onclick="loadMonitor()">🔄 Actualizar estadísticas</button>
+        <div id="monitor-content">
+          <p class="muted">Haz clic en «Actualizar estadísticas» para cargar los datos.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>ACIF104 — Aprendizaje Automático · UNAB 2025 · Proyecto: Predicción de Readmisión Hospitalaria</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+/* ── Variables ───────────────────────────────────────────────── */
+:root {
+  --primary:   #1F3864;
+  --secondary: #2E75B6;
+  --accent:    #5BA3D9;
+  --light:     #D6E4F0;
+  --danger:    #C00000;
+  --warning:   #FF8C00;
+  --success:   #107C10;
+  --bg:        #F4F6FB;
+  --card-bg:   #FFFFFF;
+  --text:      #212121;
+  --muted:     #666;
+  --radius:    10px;
+  --shadow:    0 2px 12px rgba(31,56,100,.10);
+}
+
+/* ── Reset & Base ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+h1, h2, h3 { color: var(--primary); }
+
+/* ── Header ──────────────────────────────────────────────────── */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff; padding: 24px 32px; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.header-content h1 { font-size: 1.6rem; font-weight: 700; color: #fff; }
+.subtitle { font-size: 0.92rem; opacity: .85; margin-top: 4px; }
+
+/* ── Layout ──────────────────────────────────────────────────── */
+.container { max-width: 960px; margin: 32px auto; padding: 0 20px; }
+.card {
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 28px 32px; margin-bottom: 24px;
+}
+.card h2 { font-size: 1.2rem; margin-bottom: 20px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--light); }
+.card h3 { font-size: 1.05rem; margin: 20px 0 8px; color: var(--secondary); }
+
+/* ── Formulario ──────────────────────────────────────────────── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group label { font-size: 0.88rem; font-weight: 600; color: var(--primary); }
+.form-group input, .form-group select {
+  padding: 8px 10px; border: 1.5px solid #ccc; border-radius: 6px;
+  font-size: 0.95rem; transition: border-color .2s;
+}
+.form-group input:focus, .form-group select:focus {
+  outline: none; border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(46,117,182,.15);
+}
+.form-group.highlight label { color: var(--danger); }
+.form-group.highlight input { border-color: var(--danger); }
+
+/* ── Botones ─────────────────────────────────────────────────── */
+.btn-predict {
+  width: 100%; margin-top: 20px; padding: 14px;
+  background: var(--secondary); color: #fff; border: none;
+  border-radius: var(--radius); font-size: 1.05rem; font-weight: 700;
+  cursor: pointer; transition: background .2s, transform .1s;
+}
+.btn-predict:hover  { background: var(--primary); }
+.btn-predict:active { transform: scale(.98); }
+.btn-predict:disabled { background: #aaa; cursor: not-allowed; }
+
+.btn-reset {
+  margin-top: 20px; padding: 10px 24px;
+  background: var(--light); color: var(--primary); border: none;
+  border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+}
+.btn-reset:hover { background: #b0cde8; }
+
+.btn-monitor {
+  padding: 8px 20px; background: var(--accent); color: #fff;
+  border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer;
+  margin-bottom: 16px;
+}
+.btn-monitor:hover { background: var(--secondary); }
+
+/* ── Indicador de riesgo ─────────────────────────────────────── */
+.risk-indicator {
+  display: flex; align-items: center; gap: 20px;
+  padding: 18px 24px; border-radius: var(--radius); margin-bottom: 16px;
+  border: 2px solid; transition: all .4s;
+}
+.risk-indicator.high   { background: #FFF0F0; border-color: var(--danger); }
+.risk-indicator.medium { background: #FFF8EC; border-color: var(--warning); }
+.risk-indicator.low    { background: #F0FFF4; border-color: var(--success); }
+
+.risk-icon  { font-size: 2.8rem; }
+.risk-text  { font-size: 1.15rem; font-weight: 700; }
+.risk-indicator.high   .risk-text { color: var(--danger); }
+.risk-indicator.medium .risk-text { color: var(--warning); }
+.risk-indicator.low    .risk-text { color: var(--success); }
+
+.prob-text { font-size: 2rem; font-weight: 800; margin-left: auto; color: var(--primary); }
+
+.risk-label-box {
+  background: var(--light); padding: 10px 16px; border-radius: 8px;
+  font-size: 0.92rem; font-weight: 600; color: var(--primary); margin-bottom: 20px;
+}
+
+/* ── Barra de probabilidad ───────────────────────────────────── */
+.prob-bar-container { margin: 16px 0 24px; }
+.prob-bar-label { font-size: 0.88rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.prob-bar-track {
+  height: 18px; background: #E0E0E0; border-radius: 9px; overflow: hidden;
+}
+.prob-bar-fill {
+  height: 100%; border-radius: 9px; width: 0%;
+  background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+.prob-bar-ticks {
+  display: flex; justify-content: space-between; font-size: 0.78rem;
+  color: var(--muted); margin-top: 3px;
+}
+
+/* ── Gráfico SHAP ────────────────────────────────────────────── */
+.shap-note { font-size: 0.86rem; color: var(--muted); margin-bottom: 12px; }
+#shap-chart { display: flex; flex-direction: column; gap: 8px; }
+
+.shap-row { display: flex; align-items: center; gap: 10px; }
+.shap-label { flex: 0 0 200px; font-size: 0.85rem; text-align: right; color: var(--text); }
+.shap-bar-wrap { flex: 1; height: 22px; background: #F0F0F0; border-radius: 5px; overflow: visible; position: relative; }
+.shap-bar {
+  height: 100%; border-radius: 5px; transition: width .5s;
+  display: flex; align-items: center; padding: 0 6px;
+}
+.shap-bar.positive { background: var(--secondary); justify-content: flex-end; }
+.shap-bar.negative { background: #E8463E; justify-content: flex-end; }
+.shap-val { font-size: 0.78rem; font-weight: 700; color: #fff; white-space: nowrap; }
+
+/* ── Monitoreo ───────────────────────────────────────────────── */
+.monitor-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .monitor-grid { grid-template-columns: 1fr 1fr; } }
+.monitor-stat {
+  background: var(--light); border-radius: 8px; padding: 14px;
+  text-align: center;
+}
+.monitor-stat .val { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+.monitor-stat .lbl { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+/* ── Misc ────────────────────────────────────────────────────── */
+.muted        { color: var(--muted); font-style: italic; font-size: 0.9rem; }
+.timestamp-text { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+footer {
+  text-align: center; padding: 16px;
+  font-size: 0.82rem; color: var(--muted); border-top: 1px solid #ddd;
+  margin-top: 8px;
+}
