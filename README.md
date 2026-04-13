@@ -36,6 +36,7 @@ hospital-readmission-ml/
     style.css
     app.js
   logs/                   Generado automáticamente en runtime
+  mockup/                 Capturas de mockup web y mockup en html
 ```
 
 ## Instalación Rápida
