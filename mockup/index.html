@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReadmitAI — Pronóstico de Readmisión Hospitalaria</title>
+  <link rel="stylesheet" href="landing.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════ NAVBAR ═══════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-icon">⚕️</span> ReadmitAI
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#hero">Inicio</a></li>
+        <li><a href="#about">Equipo</a></li>
+        <li><a href="#project">Proyecto</a></li>
+        <li><a href="#predict">Predicción</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <header class="hero" id="hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-badge">ACIF104 · Aprendizaje Automático · UNAB 2026</span>
+      <h1>Pronóstico de<br/><span class="gradient-text">Readmisión Hospitalaria</span></h1>
+      <p class="hero-desc">
+        Modelo de predicción basado en Machine Learning para identificar pacientes 
+        diabéticos con riesgo de reingreso hospitalario dentro de 30 días.
+      </p>
+      <div class="hero-actions">
+        <a href="#predict" class="btn btn-primary">Realizar predicción</a>
+        <a href="#project" class="btn btn-outline">Conocer el proyecto</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">25K+</span>
+          <span class="stat-label">Registros analizados</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">16</span>
+          <span class="stat-label">Variables clínicas</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">3</span>
+          <span class="stat-label">Modelos entrenados</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">SHAP</span>
+          <span class="stat-label">Explicabilidad</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════ SECCIÓN 1 — EQUIPO ═══════════ -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Nuestro Equipo</span>
+        <h2>Quiénes Somos</h2>
+        <p class="section-subtitle">
+          Somos 4 estudiantes de Ingeniería Civil Informática en la Universidad Andrés Bello, 
+          comprometidos con la aplicación de inteligencia artificial para mejorar la atención en salud.
+        </p>
+      </div>
+
+      <div class="team-grid">
+        <!-- Integrante 1 -->
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="avatar-placeholder">👩‍💻</div>
+          </div>
+          <h3>Integrante 1</h3>
+          <span class="team-role">Análisis Exploratorio de Datos</span>
+          <p class="team-desc">
+            Encargada del EDA: limpieza del dataset, análisis de distribuciones, 
+            detección de outliers y visualización de correlaciones entre variables clínicas.
+          </p>
+          <div class="team-tags">
+            <span>Pandas</span><span>Seaborn</span><span>EDA</span>
+          </div>
+        </div>
+
+        <!-- Integrante 2 -->
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="avatar-placeholder">👨‍💻</div>
+          </div>
+          <h3>Integrante 2</h3>
+          <span class="team-role">Modelos de Machine Learning</span>
+          <p class="team-desc">
+            Responsable del entrenamiento de modelos clásicos: Regresión Logística, 
+            Random Forest y SVM, incluyendo balanceo de clases con SMOTE.
+          </p>
+          <div class="team-tags">
+            <span>Scikit-learn</span><span>SMOTE</span><span>Random Forest</span>
+          </div>
+        </div>
+
+        <!-- Integrante 3 -->
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="avatar-placeholder">👩‍💻</div>
+          </div>
+          <h3>Integrante 3</h3>
+          <span class="team-role">Red Neuronal MLP (PyTorch)</span>
+          <p class="team-desc">
+            Diseño e implementación del Perceptrón Multicapa [128-64-32] con BatchNorm, 
+            Dropout y scheduler de learning rate para clasificación de readmisión.
+          </p>
+          <div class="team-tags">
+            <span>PyTorch</span><span>MLP</span><span>Deep Learning</span>
+          </div>
+        </div>
+
+        <!-- Integrante 4 -->
+        <div class="team-card">
+          <div class="team-avatar">
+            <div class="avatar-placeholder">👨‍💻</div>
+          </div>
+          <h3>Integrante 4</h3>
+          <span class="team-role">Explicabilidad &amp; Frontend</span>
+          <p class="team-desc">
+            Análisis de explicabilidad con Tree SHAP, desarrollo del backend (FastAPI) 
+            y la interfaz web interactiva para la predicción en tiempo real.
+          </p>
+          <div class="team-tags">
+            <span>SHAP</span><span>FastAPI</span><span>Frontend</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECCIÓN 2 — PROYECTO ═══════════ -->
+  <section class="section section-alt" id="project">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Acerca del Proyecto</span>
+        <h2>¿Qué hace esta aplicación?</h2>
+        <p class="section-subtitle">
+          Un sistema de predicción inteligente que ayuda a profesionales de la salud 
+          a identificar pacientes con riesgo de reingreso hospitalario.
+        </p>
+      </div>
+
+      <!-- Pipeline -->
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="step-icon">📊</div>
+          <h4>1. Análisis de Datos</h4>
+          <p>Dataset de +25.000 registros de pacientes diabéticos con 16 variables clínicas, 
+             demográficas y de tratamiento.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="step-icon">⚙️</div>
+          <h4>2. Preprocesamiento</h4>
+          <p>Codificación de variables categóricas, escalado con StandardScaler y balanceo 
+             de clases mediante SMOTE.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="step-icon">🤖</div>
+          <h4>3. Entrenamiento</h4>
+          <p>Tres modelos: Regresión Logística, Random Forest (200 árboles) y 
+             MLP [128-64-32] con PyTorch.</p>
+        </div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="step-icon">🧠</div>
+          <h4>4. Explicabilidad</h4>
+          <p>Tree SHAP para interpretar las decisiones del modelo: qué variables influyen 
+             más en cada predicción.</p>
+        </div>
+      </div>
+
+      <!-- Features del modelo -->
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🏥</div>
+          <h4>Variables Hospitalarias</h4>
+          <p>Días de hospitalización, procedimientos de laboratorio, procedimientos clínicos, 
+             medicamentos prescritos y especialidad médica.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h4>Historial del Paciente</h4>
+          <p>Número de hospitalizaciones previas (predictor clave según SHAP), visitas ambulatorias 
+             y visitas a urgencias.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔬</div>
+          <h4>Exámenes Clínicos</h4>
+          <p>Resultados de test de glucosa y hemoglobina glicosilada (HbA1c), 
+             cambio de medicamento y prescripción de fármacos para diabetes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h4>Diagnósticos</h4>
+          <p>Diagnóstico primario, secundario y terciario codificados en categorías: 
+             circulatorio, respiratorio, digestivo, diabetes, entre otros.</p>
+        </div>
+      </div>
+
+      <!-- Tech stack -->
+      <div class="tech-stack">
+        <h3>Tecnologías Utilizadas</h3>
+        <div class="tech-pills">
+          <span class="tech-pill">Python</span>
+          <span class="tech-pill">Scikit-learn</span>
+          <span class="tech-pill">PyTorch</span>
+          <span class="tech-pill">SHAP</span>
+          <span class="tech-pill">Pandas</span>
+          <span class="tech-pill">FastAPI</span>
+          <span class="tech-pill">SMOTE</span>
+          <span class="tech-pill">HTML/CSS/JS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SECCIÓN 3 — FORMULARIO DE PREDICCIÓN ═══════════ -->
+  <section class="section" id="predict">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Herramienta Interactiva</span>
+        <h2>Pronóstico de Readmisión</h2>
+        <p class="section-subtitle">
+          Ingrese los datos clínicos del paciente para obtener una predicción de riesgo 
+          de readmisión hospitalaria dentro de 30 días.
+        </p>
+      </div>
+
+      <!-- Formulario -->
+      <div class="predict-card" id="form-panel">
+        <form id="patient-form" novalidate>
+          <!-- Grupo: Datos hospitalarios -->
+          <div class="form-section-label">
+            <span class="form-section-icon">🏥</span> Datos de Hospitalización
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="time_in_hospital">Días de hospitalización</label>
+              <input type="number" id="time_in_hospital" min="1" max="14" value="5" required />
+              <span class="form-hint">Min: 1 · Max: 14</span>
+            </div>
+            <div class="form-group">
+              <label for="n_lab_procedures">Procedimientos de laboratorio</label>
+              <input type="number" id="n_lab_procedures" min="0" max="150" value="45" required />
+              <span class="form-hint">Min: 0 · Max: 150</span>
+            </div>
+            <div class="form-group">
+              <label for="n_procedures">Procedimientos clínicos</label>
+              <input type="number" id="n_procedures" min="0" max="10" value="1" required />
+              <span class="form-hint">Min: 0 · Max: 10</span>
+            </div>
+            <div class="form-group">
+              <label for="n_medications">Medicamentos prescritos</label>
+              <input type="number" id="n_medications" min="0" max="100" value="18" required />
+              <span class="form-hint">Min: 0 · Max: 100</span>
+            </div>
+            <div class="form-group">
+              <label for="medical_specialty_enc">Especialidad médica</label>
+              <select id="medical_specialty_enc" required>
+                <option value="0">Sin especialidad</option>
+                <option value="1">Medicina Interna</option>
+                <option value="2">Otra</option>
+                <option value="3" selected>Urgencias / Trauma</option>
+                <option value="4">Medicina Familiar</option>
+                <option value="5">Cardiología</option>
+                <option value="6">Cirugía</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Grupo: Historial -->
+          <div class="form-section-label">
+            <span class="form-section-icon">📋</span> Historial del Paciente
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="n_outpatient">Visitas ambulatorias previas</label>
+              <input type="number" id="n_outpatient" min="0" max="50" value="0" required />
+            </div>
+            <div class="form-group form-highlight">
+              <label for="n_inpatient">⭐ Hospitalizaciones previas <small>(predictor clave)</small></label>
+              <input type="number" id="n_inpatient" min="0" max="20" value="2" required />
+              <span class="form-hint">Variable con mayor impacto SHAP</span>
+            </div>
+            <div class="form-group">
+              <label for="n_emergency">Visitas a urgencias previas</label>
+              <input type="number" id="n_emergency" min="0" max="70" value="0" required />
+            </div>
+            <div class="form-group">
+              <label for="age_enc">Grupo etario</label>
+              <select id="age_enc" required>
+                <option value="0">[40 – 50)</option>
+                <option value="1">[50 – 60)</option>
+                <option value="2">[60 – 70)</option>
+                <option value="3" selected>[70 – 80)</option>
+                <option value="4">[80 – 90)</option>
+                <option value="5">[90 – 100)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Grupo: Exámenes y medicamentos -->
+          <div class="form-section-label">
+            <span class="form-section-icon">🔬</span> Exámenes y Medicamentos
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="glucose_test_enc">Test de glucosa</label>
+              <select id="glucose_test_enc" required>
+                <option value="0" selected>Sin test</option>
+                <option value="1">Normal</option>
+                <option value="2">Alto</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="A1Ctest_enc">Test HbA1c</label>
+              <select id="A1Ctest_enc" required>
+                <option value="0">Sin test</option>
+                <option value="1">Normal</option>
+                <option value="2" selected>Alto</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="change_enc">Cambio de medicamento</label>
+              <select id="change_enc" required>
+                <option value="0">No</option>
+                <option value="1" selected>Sí</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="diabetes_med_enc">Medicamento para diabetes</label>
+              <select id="diabetes_med_enc" required>
+                <option value="0">No</option>
+                <option value="1" selected>Sí</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Grupo: Diagnósticos -->
+          <div class="form-section-label">
+            <span class="form-section-icon">🎯</span> Diagnósticos
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="diag_1_enc">Diagnóstico primario</label>
+              <select id="diag_1_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1">Otro</option>
+                <option value="2" selected>Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4">Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="diag_2_enc">Diagnóstico secundario</label>
+              <select id="diag_2_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1" selected>Otro</option>
+                <option value="2">Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4">Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="diag_3_enc">Diagnóstico terciario</label>
+              <select id="diag_3_enc" required>
+                <option value="0">Circulatorio</option>
+                <option value="1">Otro</option>
+                <option value="2">Respiratorio</option>
+                <option value="3">Digestivo</option>
+                <option value="4" selected>Diabetes</option>
+                <option value="5">Lesión</option>
+                <option value="6">Musculoesquelético</option>
+                <option value="7">Sin dato</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <button type="submit" class="btn btn-primary btn-block " id="btn-predict">
+            <span class="btn-icon">🔍</span> Predecir riesgo de readmisión
+          </button>
+        </form>
+      </div>
+
+      <!-- Panel de resultado -->
+      <div class="predict-card result-card" id="result-panel" style="display:none;">
+        <h3 class="result-title">Resultado de la Predicción</h3>
+
+        <div class="risk-banner" id="risk-banner">
+          <div class="risk-icon" id="risk-icon"></div>
+          <div class="risk-info">
+            <div class="risk-level" id="risk-level"></div>
+            <div class="risk-prob" id="risk-prob"></div>
+          </div>
+        </div>
+
+        <div class="risk-advice" id="risk-advice"></div>
+
+        <!-- Barra de probabilidad -->
+        <div class="prob-bar-wrapper">
+          <div class="prob-bar-label-row">
+            <span>Probabilidad de readmisión</span>
+            <span id="prob-pct-text">0 %</span>
+          </div>
+          <div class="prob-track">
+            <div class="prob-fill" id="prob-fill"></div>
+          </div>
+          <div class="prob-ticks">
+            <span>0 %</span><span>25 %</span><span>50 %</span><span>75 %</span><span>100 %</span>
+          </div>
+        </div>
+
+        <!-- SHAP -->
+        <h4 class="shap-title">🧠 Factores más influyentes (SHAP)</h4>
+        <p class="shap-subtitle">
+          Barras azules aumentan el riesgo · Barras rojas lo reducen.
+        </p>
+        <div id="shap-chart" class="shap-chart"></div>
+
+        <div class="result-actions">
+          <button class="btn btn-outline" onclick="resetPrediction()">↩ Nueva predicción</button>
+        </div>
+        <p class="result-timestamp" id="result-timestamp"></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-icon">⚕️</span> ReadmitAI
+        </div>
+        <p>ACIF104 — Aprendizaje Automático · Universidad Andrés Bello · 2026</p>
+        <p class="footer-note">Proyecto académico · Ingeniería Civil Informática · Grupo 3, Semana 6</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="landing.js"></script>
+</body>
+</html>
