@@ -1,22 +1,19 @@
 // ── Configuración ────────────────────────────────────────────
 const API_URL = "http://localhost:8000";
 
-// Nombres legibles de las variables en el mismo orden que el backend
-const FEATURE_LABELS = [
-  "Días en hospital", "Procedimientos de lab.", "Procedimientos clínicos",
-  "Medicamentos", "Visitas ambulatorias", "Ingresos previos", "Visitas a urgencias",
-  "Edad (codificada)", "Test de glucosa", "Test HbA1c", "Cambio de medicamento",
-  "Med. para diabetes", "Especialidad médica", "Diagnóstico 1",
-  "Diagnóstico 2", "Diagnóstico 3",
-];
-
-// Ids de los campos del formulario (en el mismo orden que FEATURES del backend)
+// Ids de los 16 campos del formulario (en el mismo orden que FEATURES_BASE del backend)
+// El backend agrega internamente las 5 variables derivadas para llegar a 21 features.
 const FIELD_IDS = [
   "time_in_hospital", "n_lab_procedures", "n_procedures", "n_medications",
   "n_outpatient", "n_inpatient", "n_emergency", "age_enc",
   "glucose_test_enc", "A1Ctest_enc", "change_enc", "diabetes_med_enc",
   "medical_specialty_enc", "diag_1_enc", "diag_2_enc", "diag_3_enc",
 ];
+
+// Umbrales del sistema clínico de tres niveles (deben coincidir con el backend)
+const T_LOW_MAX = 0.35;   // BAJO:     [0    - 0.35)
+const T_MOD_MAX = 0.55;   // MODERADO: [0.35 - 0.55)
+                          // ALTO:     [0.55 - 1.00]
 
 // ── Manejo del formulario ─────────────────────────────────────
 document.getElementById("patient-form").addEventListener("submit", async (e) => {
@@ -57,35 +54,34 @@ document.getElementById("patient-form").addEventListener("submit", async (e) => 
 
 // ── Mostrar resultado ─────────────────────────────────────────
 function showResult(data) {
-  const prob      = data.probability;
-  const probPct   = Math.round(prob * 100);
-  const readmit   = data.readmitted === 1;
-  const riskLabel = data.risk_label;
+  const prob    = data.probability;
+  const probPct = Math.round(prob * 100);
 
-  // Indicador de riesgo
+  // Indicador de riesgo (sistema de 3 niveles)
   const indicator = document.getElementById("risk-indicator");
   const icon      = document.getElementById("risk-icon");
   const riskText  = document.getElementById("risk-text");
   const probText  = document.getElementById("prob-text");
 
   indicator.className = "risk-indicator";
-  if (prob >= 0.60) {
+  if (prob >= T_MOD_MAX) {
     indicator.classList.add("high");
-    icon.textContent    = "🔴";
+    icon.textContent     = "🔴";
     riskText.textContent = "Riesgo ALTO de readmisión";
-  } else if (prob >= 0.40) {
+  } else if (prob >= T_LOW_MAX) {
     indicator.classList.add("medium");
-    icon.textContent    = "🟠";
+    icon.textContent     = "🟠";
     riskText.textContent = "Riesgo MODERADO de readmisión";
   } else {
     indicator.classList.add("low");
-    icon.textContent    = "🟢";
+    icon.textContent     = "🟢";
     riskText.textContent = "Riesgo BAJO de readmisión";
   }
   probText.textContent = `${probPct} %`;
 
-  // Etiqueta de acción
-  document.getElementById("risk-label-box").textContent = `💡 ${riskLabel}`;
+  // Etiqueta de acción recomendada (viene del backend)
+  document.getElementById("risk-label-box").textContent =
+    `💡 ${data.recommended_action}`;
 
   // Barra de probabilidad
   const fill = document.getElementById("prob-bar-fill");
@@ -160,15 +156,18 @@ async function loadMonitor() {
       return;
     }
 
+    // Distribución por nivel (puede no existir si el backend no la calcula aún)
+    const dist = data.risk_level_distribution || {
+      BAJO:     { count: 0, pct: 0 },
+      MODERADO: { count: 0, pct: 0 },
+      ALTO:     { count: 0, pct: 0 },
+    };
+
     div.innerHTML = `
       <div class="monitor-grid">
         <div class="monitor-stat">
           <div class="val">${data.total_predictions.toLocaleString("es-CL")}</div>
           <div class="lbl">Predicciones totales</div>
-        </div>
-        <div class="monitor-stat">
-          <div class="val">${data.readmission_rate_pct} %</div>
-          <div class="lbl">Tasa de readmisión predicha</div>
         </div>
         <div class="monitor-stat">
           <div class="val">${data.avg_probability}</div>
@@ -181,6 +180,18 @@ async function loadMonitor() {
         <div class="monitor-stat">
           <div class="val">${data.max_probability}</div>
           <div class="lbl">Probabilidad máxima</div>
+        </div>
+        <div class="monitor-stat">
+          <div class="val">${dist.BAJO.pct} %</div>
+          <div class="lbl">Distribución: BAJO</div>
+        </div>
+        <div class="monitor-stat">
+          <div class="val">${dist.MODERADO.pct} %</div>
+          <div class="lbl">Distribución: MODERADO</div>
+        </div>
+        <div class="monitor-stat">
+          <div class="val">${dist.ALTO.pct} %</div>
+          <div class="lbl">Distribución: ALTO</div>
         </div>
         <div class="monitor-stat">
           <div class="val" style="font-size:1rem">${data.last_prediction_ts}</div>

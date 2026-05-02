@@ -154,3 +154,37 @@ footer {
   font-size: 0.82rem; color: var(--muted); border-top: 1px solid #ddd;
   margin-top: 8px;
 }
+
+/* ── Subtexto del indicador de riesgo ───────────────────────── */
+.risk-text-block { display: flex; flex-direction: column; flex: 1; }
+.risk-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: monospace;
+}
+
+/* ── Tarjeta de leyenda ─────────────────────────────────────── */
+.legend-card { padding: 20px 24px; }
+.legend-card h3 { margin-top: 0; color: var(--primary); }
+.legend-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 0; border-bottom: 1px solid #EEE;
+}
+.legend-row:last-of-type { border-bottom: none; }
+.legend-item {
+  display: inline-block; min-width: 180px; font-weight: 600;
+  font-family: monospace; padding: 4px 12px; border-radius: 4px;
+}
+.legend-low    { background: #E8F5E8; color: var(--success); }
+.legend-medium { background: #FFF8EC; color: var(--warning); }
+.legend-high   { background: #FFF0F0; color: var(--danger); }
+.legend-text { color: #444; flex: 1; font-size: 0.9rem; }
+.legend-note {
+  margin-top: 12px; padding: 10px 14px;
+  background: rgba(31, 56, 100, 0.08);
+  border-left: 4px solid var(--primary);
+  border-radius: 4px;
+  font-size: 0.85rem; color: var(--primary);
+  font-family: monospace; line-height: 1.6;
+}

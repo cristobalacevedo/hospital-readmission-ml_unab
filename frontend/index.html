@@ -11,7 +11,7 @@
   <header>
     <div class="header-content">
       <h1>🏥 Predicción de Readmisión Hospitalaria</h1>
-      <p class="subtitle">Pacientes con diabetes mellitus · Modelo: Random Forest + SHAP · ACIF104</p>
+      <p class="subtitle">Pacientes con diabetes mellitus · Ensemble calibrado (RF + XGBoost + LightGBM) + SHAP · ACIF104</p>
     </div>
   </header>
 
@@ -90,7 +90,7 @@
             </div>
 
             <div class="form-group">
-              <label for="change_enc">Cambio de medicamento durante la hospitalización</label>
+              <label for="change_enc">Cambio de medicamento</label>
               <select id="change_enc" required>
                 <option value="0">No</option>
                 <option value="1" selected>Sí</option>
@@ -98,7 +98,7 @@
             </div>
 
             <div class="form-group">
-              <label for="diabetes_med_enc">Recibió medicamento para diabetes</label>
+              <label for="diabetes_med_enc">Medicamento para diabetes</label>
               <select id="diabetes_med_enc" required>
                 <option value="0">No</option>
                 <option value="1" selected>Sí</option>
@@ -108,13 +108,13 @@
             <div class="form-group">
               <label for="medical_specialty_enc">Especialidad médica</label>
               <select id="medical_specialty_enc" required>
-                <option value="0">Sin especialidad</option>
-                <option value="1">Medicina Interna</option>
-                <option value="2">Otra</option>
-                <option value="3" selected>Urgencias/Trauma</option>
-                <option value="4">Medicina Familiar</option>
-                <option value="5">Cardiología</option>
-                <option value="6">Cirugía</option>
+                <option value="0">Cardiología</option>
+                <option value="1">Medicina interna</option>
+                <option value="2">Familia</option>
+                <option value="3" selected>Emergency/Trauma</option>
+                <option value="4">Cirugía</option>
+                <option value="5">Otra</option>
+                <option value="6">Sin registro</option>
               </select>
             </div>
 
@@ -122,13 +122,13 @@
               <label for="diag_1_enc">Diagnóstico primario</label>
               <select id="diag_1_enc" required>
                 <option value="0">Circulatorio</option>
-                <option value="1">Otro</option>
-                <option value="2" selected>Respiratorio</option>
+                <option value="1">Respiratorio</option>
+                <option value="2" selected>Diabetes</option>
                 <option value="3">Digestivo</option>
-                <option value="4">Diabetes</option>
-                <option value="5">Lesión</option>
-                <option value="6">Musculoesquelético</option>
-                <option value="7">Sin dato</option>
+                <option value="4">Lesión</option>
+                <option value="5">Genitourinario</option>
+                <option value="6">Neoplasia</option>
+                <option value="7">Otro</option>
               </select>
             </div>
 
@@ -136,13 +136,13 @@
               <label for="diag_2_enc">Diagnóstico secundario</label>
               <select id="diag_2_enc" required>
                 <option value="0">Circulatorio</option>
-                <option value="1" selected>Otro</option>
-                <option value="2">Respiratorio</option>
+                <option value="1" selected>Respiratorio</option>
+                <option value="2">Diabetes</option>
                 <option value="3">Digestivo</option>
-                <option value="4">Diabetes</option>
-                <option value="5">Lesión</option>
-                <option value="6">Musculoesquelético</option>
-                <option value="7">Sin dato</option>
+                <option value="4">Lesión</option>
+                <option value="5">Genitourinario</option>
+                <option value="6">Neoplasia</option>
+                <option value="7">Otro</option>
               </select>
             </div>
 
@@ -150,74 +150,110 @@
               <label for="diag_3_enc">Diagnóstico terciario</label>
               <select id="diag_3_enc" required>
                 <option value="0">Circulatorio</option>
-                <option value="1">Otro</option>
-                <option value="2">Respiratorio</option>
+                <option value="1">Respiratorio</option>
+                <option value="2">Diabetes</option>
                 <option value="3">Digestivo</option>
-                <option value="4" selected>Diabetes</option>
-                <option value="5">Lesión</option>
-                <option value="6">Musculoesquelético</option>
-                <option value="7">Sin dato</option>
+                <option value="4" selected>Lesión</option>
+                <option value="5">Genitourinario</option>
+                <option value="6">Neoplasia</option>
+                <option value="7">Otro</option>
               </select>
             </div>
 
           </div>
 
-          <button type="submit" class="btn-predict" id="btn-predict">
+          <button type="submit" id="btn-predict" class="btn-primary">
             🔍 Predecir riesgo de readmisión
           </button>
         </form>
       </section>
 
-      <!-- Panel de resultado -->
-      <section class="card" id="result-section" style="display:none;">
+      <!-- Sección de resultados (oculta inicialmente) -->
+      <section class="card" id="result-section" style="display:none">
         <h2>📊 Resultado de la Predicción</h2>
 
-        <div id="risk-indicator" class="risk-indicator">
-          <div id="risk-icon" class="risk-icon"></div>
-          <div id="risk-text" class="risk-text"></div>
-          <div id="prob-text" class="prob-text"></div>
+        <!-- Indicador visual del nivel de riesgo -->
+        <div class="risk-indicator" id="risk-indicator">
+          <span class="risk-icon" id="risk-icon">🟢</span>
+          <div class="risk-text-block">
+            <div class="risk-text" id="risk-text">Riesgo BAJO de readmisión</div>
+            <div class="risk-sub">Predicción binaria clínica (umbral 0,42) — Ensemble calibrado</div>
+          </div>
+          <span class="prob-text" id="prob-text">25 %</span>
         </div>
 
-        <div id="risk-label-box" class="risk-label-box"></div>
+        <!-- Etiqueta de acción recomendada -->
+        <div class="risk-label-box" id="risk-label-box">
+          💡 Seguimiento ambulatorio estándar
+        </div>
 
         <!-- Barra de probabilidad -->
-        <div class="prob-bar-container">
+        <div class="prob-bar-section">
           <div class="prob-bar-label">Probabilidad de readmisión</div>
           <div class="prob-bar-track">
-            <div id="prob-bar-fill" class="prob-bar-fill"></div>
+            <div class="prob-bar-fill" id="prob-bar-fill"></div>
           </div>
           <div class="prob-bar-ticks">
-            <span>0 %</span><span>25 %</span><span>50 %</span><span>75 %</span><span>100 %</span>
+            <span>0 %</span>
+            <span>25 %</span>
+            <span>50 %</span>
+            <span>75 %</span>
+            <span>100 %</span>
           </div>
         </div>
 
-        <!-- Gráfico SHAP -->
-        <h3>🧠 Explicación SHAP — Factores más influyentes</h3>
-        <p class="shap-note">
-          Los valores positivos (azul) aumentan el riesgo de readmisión; los negativos (rojo) lo reducen.
-        </p>
-        <div id="shap-chart"></div>
+        <!-- Sección SHAP -->
+        <div class="shap-section">
+          <h3>🧠 Explicación SHAP — Factores más influyentes</h3>
+          <p class="shap-note">
+            Los valores positivos (azul) aumentan el riesgo de readmisión;
+            los negativos (rojo) lo reducen.
+          </p>
+          <div id="shap-chart"></div>
+        </div>
 
-        <button class="btn-reset" onclick="resetForm()">↩ Nueva predicción</button>
-        <p class="timestamp-text" id="timestamp-text"></p>
+        <button class="btn-secondary" onclick="resetForm()">↩ Nueva predicción</button>
+        <div class="timestamp-text" id="timestamp-text"></div>
       </section>
 
-      <!-- Panel de monitoreo -->
+      <!-- Sección de monitoreo -->
       <section class="card" id="monitor-section">
         <h2>📈 Monitoreo del Modelo</h2>
-        <button class="btn-monitor" onclick="loadMonitor()">🔄 Actualizar estadísticas</button>
+        <button class="btn-secondary" onclick="loadMonitor()">🔄 Actualizar estadísticas</button>
         <div id="monitor-content">
-          <p class="muted">Haz clic en «Actualizar estadísticas» para cargar los datos.</p>
+          <p class="muted">Haz clic en "Actualizar estadísticas" para ver los datos.</p>
         </div>
+      </section>
+
+      <!-- Leyenda de niveles de riesgo -->
+      <section class="card legend-card">
+        <h3>📖 Leyenda — Niveles de riesgo</h3>
+        <div class="legend-row">
+          <span class="legend-item legend-low">🟢 BAJO &lt; 35 %</span>
+          <span class="legend-text">Seguimiento ambulatorio estándar; educación en autocuidado</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-item legend-medium">🟠 MODERADO 35–54 %</span>
+          <span class="legend-text">Seguimiento telefónico a 7 días; revisión farmacológica</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-item legend-high">🔴 ALTO ≥ 55 %</span>
+          <span class="legend-text">Intervención preventiva inmediata; visita domiciliaria a 48 h</span>
+        </div>
+        <p class="legend-note">
+          Umbral clínico binario: <b>0,42</b> (Recall ≥ 0,85).
+          Modelo: ensemble ponderado calibrado de Random Forest, XGBoost y LightGBM.
+        </p>
       </section>
 
     </div>
   </main>
 
   <footer>
-    <p>ACIF104 — Aprendizaje Automático · UNAB 2025 · Proyecto: Predicción de Readmisión Hospitalaria</p>
+    ACIF104 — Aprendizaje de Máquina · UNAB 2026 · Proyecto: Predicción de Readmisión Hospitalaria
   </footer>
 
   <script src="app.js"></script>
+
 </body>
 </html>

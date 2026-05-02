@@ -1,16 +1,28 @@
-# 🏥 Predicción de Readmisión Hospitalaria en Pacientes Diabéticos
+# Hospital Readmission Prediction — ACIF104
 
-## ACIF104 — Aprendizaje de Máquina NRC 2182 | UNAB 
+Sistema de predicción de readmisión hospitalaria en pacientes diabéticos basado en aprendizaje automático, con explicabilidad clínica mediante SHAP y arquitectura de despliegue completa (backend FastAPI + frontend web).
 
-Este proyecto implementa un pipeline avanzado de Machine Learning y Deep Learning (PyTorch) para predecir la readmisión hospitalaria. El modelo de Red Neuronal está optimizado para procesamiento en paralelo mediante **NVIDIA CUDA**.
+**Asignatura:** ACIF104 — Aprendizaje de Máquina · UNAB 2026
 
-Proyecto de Machine Learning para predecir la readmisión hospitalaria en pacientes diabéticos.
-Dataset: UCI Diabetes 130-US Hospitals (1999–2008).
+## Modelo del Sistema
 
-## ⚠️ Requisito de Hardware (IMPORTANTE)
-Este proyecto utiliza **CUDA** para acelerar el entrenamiento de la red neuronal y el cálculo de valores SHAP complejos. 
-* **Entorno Obligatorio:** NVIDIA GPU con soporte CUDA.
-* **Plataforma recomendada:** Google Colab (con aceleración por hardware T4/L4 activada).
+El sistema utiliza un **ensemble ponderado calibrado** que combina tres clasificadores complementarios basados en árboles:
+
+- **Random Forest** — explicabilidad exacta mediante Tree SHAP
+- **XGBoost** — captura interacciones no lineales con regularización L1/L2
+- **LightGBM** — diversidad metodológica con crecimiento por hojas
+
+Las probabilidades del ensemble se procesan mediante **calibración isotónica** ajustada en validación, garantizando interpretación clínica directa de las probabilidades emitidas.
+
+### Sistema clínico de tres niveles de riesgo
+
+| Nivel | Rango de probabilidad | Protocolo clínico |
+|-------|-----------------------|-------------------|
+| 🟢 BAJO | `[0 — 0,35)` | Seguimiento ambulatorio estándar; educación en autocuidado |
+| 🟠 MODERADO | `[0,35 — 0,55)` | Seguimiento telefónico a 7 días; revisión farmacológica |
+| 🔴 ALTO | `[0,55 — 1,00]` | Intervención preventiva inmediata; visita domiciliaria a 48 h |
+
+**Umbral clínico binario:** `0,42` (Recall ≥ 0,85 sobre la clase positiva).
 
 ## Estructura del Repositorio
 
@@ -19,30 +31,29 @@ hospital-readmission-ml/
   README.md
   requirements.txt
   .gitignore
-  data/
-    hospital_readmissions.csv
-    README.md             (sobre el dataset)
+  data/                  ← Coloca aquí hospital_readmissions.csv
   notebooks/
-    01_EDA.ipynb
-    02_Models.ipynb
-    03_DL.ipynb
-    04_SHAP.ipynb
-    readmision_hospitalaria_colab.ipynb
-  backend/                Directorio provisorio para siguiente etapa de montaje en web
-    main.py
-    model/                Generado al ejecutar notebook
-  frontend/               Directorio provisorio para siguiente etapa de montaje en web
+    readmision_hospitalaria_colab.ipynb       ← Pipeline completo
+  backend/
+    main.py              ← FastAPI con ensemble calibrado
+    model/               ← Generado por el notebook (paso 16)
+      rf_final.pkl
+      xgb_final.pkl
+      lgb_final.pkl
+      isotonic_calibrator.pkl
+      scaler.pkl
+      ensemble_config.json
+  frontend/
     index.html
     style.css
     app.js
-  logs/                   Generado automáticamente en runtime
-  mockup/                 Capturas de mockup web y mockup en html
+  logs/                  ← Generado automáticamente en runtime
 ```
 
-## Instalación Rápida
+## Instalación
 
 ```bash
-git clone https://github.com/grupo-acif104/hospital-readmission-ml_unab.git
+git clone https://github.com/cristobalacevedo/hospital-readmission-ml_unab.git
 cd hospital-readmission-ml_unab
 python -m venv venv
 source venv/bin/activate      # macOS/Linux
@@ -55,21 +66,32 @@ pip install -r requirements.txt
 Descarga `hospital_readmissions.csv` y colócalo en la carpeta `data/`.
 Fuente: https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008
 
-## Ejecutar los Notebooks
+## Ejecutar el Notebook
 
 ```bash
-jupyter notebook
+jupyter notebook notebooks/readmision_hospitalaria_colab.ipynb
 ```
 
-Ejecutar: 
-1. `notebooks/readmision_hospitalaria_colab.ipynb` (dentro de Colab) ← Genera `/modelos/rf_model.pkl` y `scaler.pkl`
+El notebook ejecuta el pipeline completo en 16 pasos secuenciales:
 
-o en su defecto, por partes:
+1. Instalación de dependencias
+2. Carga del dataset
+3. Importaciones y configuración global
+4. Preprocesamiento de datos
+5. Análisis exploratorio (EDA)
+6. Partición estratificada y balanceo SMOTE
+7. Modelos base (LR, RF, SVM)
+8. Red Neuronal MLP con PyTorch
+9. Comparación de modelos base
+10. Ingeniería de características avanzada (5 variables derivadas)
+11. Modelos del ensemble (RF optimizado, XGBoost, LightGBM)
+12. Ensemble ponderado con calibración isotónica
+13. Validación cruzada estratificada 5-fold
+14. Explicabilidad con Tree SHAP
+15. Sistema de predicción interactivo con 3 niveles de riesgo
+16. Guardado de modelos para despliegue
 
-1. `notebooks/01_EDA.ipynb`
-2. `notebooks/02_Models.ipynb`  ← Genera `backend/model/rf_model.pkl` y `scaler.pkl`
-3. `notebooks/03_DL.ipynb`
-4. `notebooks/04_SHAP.ipynb`
+Al finalizar, los artefactos del modelo quedarán en `backend/model/`.
 
 ## Ejecutar el Backend
 
@@ -78,8 +100,18 @@ cd backend
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-API disponible en: http://localhost:8000  
-Documentación (Swagger): http://localhost:8000/docs
+API disponible en: http://localhost:8000
+Documentación interactiva (Swagger): http://localhost:8000/docs
+
+### Endpoints expuestos
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/` | Estado general del servicio |
+| GET | `/health` | Estado de carga de cada componente del ensemble |
+| GET | `/model-info` | Configuración del ensemble (pesos y umbrales) |
+| POST | `/predict` | Predicción con sistema de 3 niveles y SHAP |
+| GET | `/monitor` | Estadísticas agregadas del log de predicciones |
 
 ## Ejecutar el Frontend
 
@@ -92,12 +124,11 @@ Abrir en el navegador: http://localhost:3000
 
 ## Tecnologías
 
-- NVIDIA CUDA GPU T4 - Google Colab
 - Python 3.11, PyTorch 2.1, scikit-learn 1.4, imbalanced-learn 0.11
+- XGBoost 2.0, LightGBM 4.3
 - SHAP 0.44, FastAPI 0.110, uvicorn 0.27
 - HTML5, CSS3, JavaScript (vanilla)
 
 ## Equipo
 
-Proyecto grupal — ACIF104 Aprendizaje de Máquina NRC 2182 — UNAB 2026
-
+Proyecto grupal — ACIF104 Aprendizaje de Máquina — UNAB 2026
