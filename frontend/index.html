@@ -3,253 +3,272 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Predicción de Readmisión Hospitalaria</title>
+  <title>Predicción de Readmisión Hospitalaria · UNAB 2026</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header>
-    <div class="header-content">
+  <!-- ═══════════════════════════════════════════════════════════════
+       HEADER — Identidad del sistema
+  ═══════════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="app-header-left">
       <h1>🏥 Predicción de Readmisión Hospitalaria</h1>
-      <p class="subtitle">Pacientes con diabetes mellitus · Ensemble calibrado (RF + XGBoost + LightGBM) + SHAP · ACIF104</p>
+      <p class="app-header-subtitle">
+        Pacientes con diabetes mellitus · Modelo: Ensemble calibrado (RF + XGBoost + LightGBM) + SHAP · ACIF104
+      </p>
     </div>
+    <div class="app-header-badge">Ensemble + SHAP</div>
   </header>
 
-  <main>
-    <div class="container">
+  <!-- ═══════════════════════════════════════════════════════════════
+       MAIN — Contenedor de cards
+  ═══════════════════════════════════════════════════════════════ -->
+  <main class="app-main">
 
-      <!-- Formulario de datos del paciente -->
-      <section class="card" id="form-section">
-        <h2>📋 Datos del Paciente</h2>
-        <form id="patient-form">
-          <div class="form-grid">
+    <!-- ─────────────────────────────────────────────────────────────
+         CARD 1 — Formulario de datos del paciente
+    ───────────────────────────────────────────────────────────── -->
+    <section id="form-section" class="app-card">
+      <div class="app-card-title">📋 Datos del Paciente</div>
 
-            <div class="form-group">
-              <label for="time_in_hospital">Días de hospitalización (1–14)</label>
-              <input type="number" id="time_in_hospital" min="1" max="14" value="5" required />
-            </div>
+      <form id="patient-form">
+        <div class="form-grid">
 
-            <div class="form-group">
-              <label for="n_lab_procedures">Procedimientos de laboratorio</label>
-              <input type="number" id="n_lab_procedures" min="0" max="150" value="45" required />
-            </div>
-
-            <div class="form-group">
-              <label for="n_procedures">Procedimientos clínicos</label>
-              <input type="number" id="n_procedures" min="0" max="10" value="1" required />
-            </div>
-
-            <div class="form-group">
-              <label for="n_medications">Medicamentos prescritos</label>
-              <input type="number" id="n_medications" min="0" max="100" value="18" required />
-            </div>
-
-            <div class="form-group">
-              <label for="n_outpatient">Visitas ambulatorias previas</label>
-              <input type="number" id="n_outpatient" min="0" max="50" value="0" required />
-            </div>
-
-            <div class="form-group highlight">
-              <label for="n_inpatient">⭐ Hospitalizaciones previas (predictor clave)</label>
-              <input type="number" id="n_inpatient" min="0" max="20" value="2" required />
-            </div>
-
-            <div class="form-group">
-              <label for="n_emergency">Visitas a urgencias previas</label>
-              <input type="number" id="n_emergency" min="0" max="70" value="0" required />
-            </div>
-
-            <div class="form-group">
-              <label for="age_enc">Grupo etario (0=[40-50) … 5=[90-100))</label>
-              <select id="age_enc" required>
-                <option value="0">[40–50)</option>
-                <option value="1">[50–60)</option>
-                <option value="2">[60–70)</option>
-                <option value="3" selected>[70–80)</option>
-                <option value="4">[80–90)</option>
-                <option value="5">[90–100)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="glucose_test_enc">Test de glucosa</label>
-              <select id="glucose_test_enc" required>
-                <option value="0" selected>Sin test</option>
-                <option value="1">Normal</option>
-                <option value="2">Alto</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="A1Ctest_enc">Test HbA1c</label>
-              <select id="A1Ctest_enc" required>
-                <option value="0">Sin test</option>
-                <option value="1">Normal</option>
-                <option value="2" selected>Alto</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="change_enc">Cambio de medicamento</label>
-              <select id="change_enc" required>
-                <option value="0">No</option>
-                <option value="1" selected>Sí</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="diabetes_med_enc">Medicamento para diabetes</label>
-              <select id="diabetes_med_enc" required>
-                <option value="0">No</option>
-                <option value="1" selected>Sí</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="medical_specialty_enc">Especialidad médica</label>
-              <select id="medical_specialty_enc" required>
-                <option value="0">Cardiología</option>
-                <option value="1">Medicina interna</option>
-                <option value="2">Familia</option>
-                <option value="3" selected>Emergency/Trauma</option>
-                <option value="4">Cirugía</option>
-                <option value="5">Otra</option>
-                <option value="6">Sin registro</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="diag_1_enc">Diagnóstico primario</label>
-              <select id="diag_1_enc" required>
-                <option value="0">Circulatorio</option>
-                <option value="1">Respiratorio</option>
-                <option value="2" selected>Diabetes</option>
-                <option value="3">Digestivo</option>
-                <option value="4">Lesión</option>
-                <option value="5">Genitourinario</option>
-                <option value="6">Neoplasia</option>
-                <option value="7">Otro</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="diag_2_enc">Diagnóstico secundario</label>
-              <select id="diag_2_enc" required>
-                <option value="0">Circulatorio</option>
-                <option value="1" selected>Respiratorio</option>
-                <option value="2">Diabetes</option>
-                <option value="3">Digestivo</option>
-                <option value="4">Lesión</option>
-                <option value="5">Genitourinario</option>
-                <option value="6">Neoplasia</option>
-                <option value="7">Otro</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="diag_3_enc">Diagnóstico terciario</label>
-              <select id="diag_3_enc" required>
-                <option value="0">Circulatorio</option>
-                <option value="1">Respiratorio</option>
-                <option value="2">Diabetes</option>
-                <option value="3">Digestivo</option>
-                <option value="4" selected>Lesión</option>
-                <option value="5">Genitourinario</option>
-                <option value="6">Neoplasia</option>
-                <option value="7">Otro</option>
-              </select>
-            </div>
-
+          <!-- Numéricos -->
+          <div class="field-group">
+            <label class="field-label" for="time_in_hospital">Días de hospitalización (1–14)</label>
+            <input class="field-input" type="number" id="time_in_hospital" name="time_in_hospital" min="1" max="14" value="5" required />
           </div>
 
-          <button type="submit" id="btn-predict" class="btn-primary">
-            🔍 Predecir riesgo de readmisión
-          </button>
-        </form>
-      </section>
-
-      <!-- Sección de resultados (oculta inicialmente) -->
-      <section class="card" id="result-section" style="display:none">
-        <h2>📊 Resultado de la Predicción</h2>
-
-        <!-- Indicador visual del nivel de riesgo -->
-        <div class="risk-indicator" id="risk-indicator">
-          <span class="risk-icon" id="risk-icon">🟢</span>
-          <div class="risk-text-block">
-            <div class="risk-text" id="risk-text">Riesgo BAJO de readmisión</div>
-            <div class="risk-sub">Predicción binaria clínica (umbral 0,42) — Ensemble calibrado</div>
+          <div class="field-group">
+            <label class="field-label" for="n_lab_procedures">Procedimientos de laboratorio</label>
+            <input class="field-input" type="number" id="n_lab_procedures" name="n_lab_procedures" min="0" max="150" value="45" required />
           </div>
-          <span class="prob-text" id="prob-text">25 %</span>
-        </div>
 
-        <!-- Etiqueta de acción recomendada -->
-        <div class="risk-label-box" id="risk-label-box">
-          💡 Seguimiento ambulatorio estándar
-        </div>
-
-        <!-- Barra de probabilidad -->
-        <div class="prob-bar-section">
-          <div class="prob-bar-label">Probabilidad de readmisión</div>
-          <div class="prob-bar-track">
-            <div class="prob-bar-fill" id="prob-bar-fill"></div>
+          <div class="field-group">
+            <label class="field-label" for="n_procedures">Procedimientos clínicos</label>
+            <input class="field-input" type="number" id="n_procedures" name="n_procedures" min="0" max="10" value="1" required />
           </div>
-          <div class="prob-bar-ticks">
-            <span>0 %</span>
-            <span>25 %</span>
-            <span>50 %</span>
-            <span>75 %</span>
-            <span>100 %</span>
+
+          <div class="field-group">
+            <label class="field-label" for="n_medications">Medicamentos prescritos</label>
+            <input class="field-input" type="number" id="n_medications" name="n_medications" min="0" max="100" value="18" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="n_outpatient">Visitas ambulatorias previas</label>
+            <input class="field-input" type="number" id="n_outpatient" name="n_outpatient" min="0" max="50" value="0" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label highlight" for="n_inpatient">⭐ Hospitalizaciones previas (predictor clave)</label>
+            <input class="field-input highlight-field" type="number" id="n_inpatient" name="n_inpatient" min="0" max="20" value="2" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="n_emergency">Visitas a urgencias previas</label>
+            <input class="field-input" type="number" id="n_emergency" name="n_emergency" min="0" max="70" value="0" required />
+          </div>
+
+          <!-- Categóricos -->
+          <div class="field-group">
+            <label class="field-label" for="age_enc">Grupo etario</label>
+            <select class="field-select" id="age_enc" name="age_enc" required>
+              <option value="0">[40–50)</option>
+              <option value="1">[50–60)</option>
+              <option value="2">[60–70)</option>
+              <option value="3" selected>[70–80)</option>
+              <option value="4">[80–90)</option>
+              <option value="5">[90–100)</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="glucose_test_enc">Test de glucosa</label>
+            <select class="field-select" id="glucose_test_enc" name="glucose_test_enc" required>
+              <option value="0" selected>Sin test</option>
+              <option value="1">Normal</option>
+              <option value="2">Alto</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="A1Ctest_enc">Test HbA1c</label>
+            <select class="field-select" id="A1Ctest_enc" name="A1Ctest_enc" required>
+              <option value="0">Sin test</option>
+              <option value="1">Normal</option>
+              <option value="2" selected>Alto</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="change_enc">Cambio de medicamento en hospitalización</label>
+            <select class="field-select" id="change_enc" name="change_enc" required>
+              <option value="0">No</option>
+              <option value="1" selected>Sí</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="diabetes_med_enc">Recibió medicamento para diabetes</label>
+            <select class="field-select" id="diabetes_med_enc" name="diabetes_med_enc" required>
+              <option value="0">No</option>
+              <option value="1" selected>Sí</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="medical_specialty_enc">Especialidad médica</label>
+            <select class="field-select" id="medical_specialty_enc" name="medical_specialty_enc" required>
+              <option value="0">Cardiología</option>
+              <option value="1">Medicina interna</option>
+              <option value="2">Familia</option>
+              <option value="3" selected>Urgencias/Trauma</option>
+              <option value="4">Cirugía</option>
+              <option value="5">Otra</option>
+              <option value="6">Sin registro</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="diag_1_enc">Diagnóstico primario</label>
+            <select class="field-select" id="diag_1_enc" name="diag_1_enc" required>
+              <option value="0">Circulatorio</option>
+              <option value="1" selected>Respiratorio</option>
+              <option value="2">Diabetes</option>
+              <option value="3">Digestivo</option>
+              <option value="4">Lesión</option>
+              <option value="5">Genitourinario</option>
+              <option value="6">Neoplasia</option>
+              <option value="7">Otro</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="diag_2_enc">Diagnóstico secundario</label>
+            <select class="field-select" id="diag_2_enc" name="diag_2_enc" required>
+              <option value="0">Circulatorio</option>
+              <option value="1">Respiratorio</option>
+              <option value="2">Diabetes</option>
+              <option value="3">Digestivo</option>
+              <option value="4">Lesión</option>
+              <option value="5">Genitourinario</option>
+              <option value="6">Neoplasia</option>
+              <option value="7" selected>Otro</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="diag_3_enc">Diagnóstico terciario</label>
+            <select class="field-select" id="diag_3_enc" name="diag_3_enc" required>
+              <option value="0">Circulatorio</option>
+              <option value="1">Respiratorio</option>
+              <option value="2" selected>Diabetes</option>
+              <option value="3">Digestivo</option>
+              <option value="4">Lesión</option>
+              <option value="5">Genitourinario</option>
+              <option value="6">Neoplasia</option>
+              <option value="7">Otro</option>
+            </select>
+          </div>
+
+        </div>
+
+        <button type="submit" id="btn-predict" class="btn-primary">
+          🔍 Predecir riesgo de readmisión
+        </button>
+      </form>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         CARD 2 — Resultado de la predicción (oculto inicialmente)
+    ───────────────────────────────────────────────────────────── -->
+    <section id="result-section" class="app-card" style="display:none">
+      <div class="app-card-title">📊 Resultado de la Predicción</div>
+
+      <!-- Indicador de riesgo (cambia color según nivel) -->
+      <div id="risk-indicator" class="risk-indicator low">
+        <span id="risk-icon" class="risk-icon">🟢</span>
+        <div class="risk-text-block">
+          <div id="risk-text" class="risk-text">Riesgo BAJO de readmisión</div>
+          <div id="risk-sub" class="risk-sub">
+            Predicción binaria clínica (umbral 0,42) — Ensemble calibrado
           </div>
         </div>
+        <span id="prob-text" class="prob-text">25 %</span>
+      </div>
 
-        <!-- Sección SHAP -->
-        <div class="shap-section">
-          <h3>🧠 Explicación SHAP — Factores más influyentes</h3>
-          <p class="shap-note">
-            Los valores positivos (azul) aumentan el riesgo de readmisión;
-            los negativos (rojo) lo reducen.
-          </p>
-          <div id="shap-chart"></div>
-        </div>
+      <!-- Acción recomendada -->
+      <div id="risk-action-box" class="risk-action-box low">
+        💡 Seguimiento ambulatorio estándar; educación en autocuidado al alta.
+      </div>
 
-        <button class="btn-secondary" onclick="resetForm()">↩ Nueva predicción</button>
-        <div class="timestamp-text" id="timestamp-text"></div>
-      </section>
+      <!-- Barra de probabilidad -->
+      <div class="prob-bar-section">
+        <div class="prob-bar-label">Probabilidad de readmisión</div>
+        <div class="prob-bar-track">
+          <div id="prob-bar-fill" class="prob-bar-fill"></div>
+        </div>
+        <div class="prob-bar-ticks">
+          <span>0 %</span><span>25 %</span><span>50 %</span><span>75 %</span><span>100 %</span>
+        </div>
+      </div>
 
-      <!-- Sección de monitoreo -->
-      <section class="card" id="monitor-section">
-        <h2>📈 Monitoreo del Modelo</h2>
-        <button class="btn-secondary" onclick="loadMonitor()">🔄 Actualizar estadísticas</button>
-        <div id="monitor-content">
-          <p class="muted">Haz clic en "Actualizar estadísticas" para ver los datos.</p>
-        </div>
-      </section>
-
-      <!-- Leyenda de niveles de riesgo -->
-      <section class="card legend-card">
-        <h3>📖 Leyenda — Niveles de riesgo</h3>
-        <div class="legend-row">
-          <span class="legend-item legend-low">🟢 BAJO &lt; 35 %</span>
-          <span class="legend-text">Seguimiento ambulatorio estándar; educación en autocuidado</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-item legend-medium">🟠 MODERADO 35–54 %</span>
-          <span class="legend-text">Seguimiento telefónico a 7 días; revisión farmacológica</span>
-        </div>
-        <div class="legend-row">
-          <span class="legend-item legend-high">🔴 ALTO ≥ 55 %</span>
-          <span class="legend-text">Intervención preventiva inmediata; visita domiciliaria a 48 h</span>
-        </div>
-        <p class="legend-note">
-          Umbral clínico binario: <b>0,42</b> (Recall ≥ 0,85).
-          Modelo: ensemble ponderado calibrado de Random Forest, XGBoost y LightGBM.
+      <!-- SHAP -->
+      <div class="shap-section">
+        <h3>🧠 Explicación SHAP — Factores más influyentes</h3>
+        <p class="shap-note">
+          Los valores positivos (azul) aumentan el riesgo de readmisión;
+          los negativos (rojo) lo reducen.
         </p>
-      </section>
+        <div id="shap-chart"></div>
+      </div>
 
-    </div>
+      <button class="btn-secondary" onclick="resetForm()">↩ Nueva predicción</button>
+      <div id="timestamp-text" class="timestamp-text"></div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         CARD 3 — Monitoreo del modelo
+    ───────────────────────────────────────────────────────────── -->
+    <section id="monitor-section" class="app-card">
+      <div class="app-card-title">📈 Monitoreo del Modelo</div>
+      <button class="btn-secondary" onclick="loadMonitor()">🔄 Actualizar estadísticas</button>
+      <div id="monitor-content">
+        <p class="muted">Haz clic en «Actualizar estadísticas» para cargar los datos.</p>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         CARD 4 — Leyenda de niveles de riesgo (siempre visible)
+    ───────────────────────────────────────────────────────────── -->
+    <section class="app-card legend-card">
+      <div class="app-card-title">📖 Leyenda — Niveles de riesgo</div>
+      <div class="legend-row">
+        <span class="legend-pill legend-low">🟢 BAJO &lt; 35 %</span>
+        <span class="legend-text">Seguimiento ambulatorio estándar; educación en autocuidado.</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-pill legend-medium">🟠 MODERADO 35–54 %</span>
+        <span class="legend-text">Seguimiento telefónico a 7 días; revisión farmacológica.</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-pill legend-high">🔴 ALTO ≥ 55 %</span>
+        <span class="legend-text">Intervención preventiva inmediata; visita domiciliaria a 48 h.</span>
+      </div>
+      <p class="legend-note">
+        ℹ️ <b>Umbral clínico binario:</b> 0,42 (Recall ≥ 0,85).
+        Modelo: ensemble ponderado calibrado de Random Forest, XGBoost y LightGBM.
+      </p>
+    </section>
+
   </main>
 
-  <footer>
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════════ -->
+  <footer class="app-footer">
     ACIF104 — Aprendizaje de Máquina · UNAB 2026 · Proyecto: Predicción de Readmisión Hospitalaria
   </footer>
 

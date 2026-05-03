@@ -1,0 +1,43 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# ML model files (mounted as volume at runtime)
+backend/model/*.pkl
+backend/model/*.joblib
+
+# Data files
+data/
+*.csv
+
+# Notebooks and checkpoints
+notebooks/
+.ipynb_checkpoints/
+
+# Logs (mounted as volume at runtime)
+logs/
+
+# Docs, figures, and project artifacts
+docs/
+figures/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Git and IDE
+.git/
+.gitignore
+.claude/
+settings.local.json
+
+# Docker files (not needed inside the image)
+docker/
+
+# README and scripts not needed at runtime
+README.md
+start.sh

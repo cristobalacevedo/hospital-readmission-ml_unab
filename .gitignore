@@ -12,5 +12,3 @@ logs/*.log
 dist/
 build/
 .env
-notebooks/modelos
-rf_baseline_sumativa1.pkl

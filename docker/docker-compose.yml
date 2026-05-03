@@ -1,0 +1,58 @@
+# ═══════════════════════════════════════════════════════════════════
+# docker-compose.yml — Stack completo (backend + frontend)
+# Predicción de Readmisión Hospitalaria
+# ACIF104 — Aprendizaje de Máquina · UNAB 2026
+#
+# Uso:
+#   docker compose up -d            # iniciar todo
+#   docker compose logs -f          # ver logs en tiempo real
+#   docker compose down             # detener todo
+#   docker compose ps               # estado de los servicios
+# ═══════════════════════════════════════════════════════════════════
+
+services:
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: readmission-backend:1.0.0
+    container_name: readmission-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      # Modelos y logs persistentes
+      - ../backend/model:/app/backend/model:ro
+      - ../logs:/app/logs
+    environment:
+      - MODEL_DIR=/app/backend/model
+      - LOG_PATH=/app/logs/predictions.log
+      - CORS_ORIGINS=*
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - readmission-net
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    image: readmission-frontend:1.0.0
+    container_name: readmission-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - readmission-net
+
+networks:
+  readmission-net:
+    driver: bridge

@@ -1,0 +1,60 @@
+{
+  "weights": {
+    "rf": 0.6448,
+    "xgb": 0.639,
+    "lgb": 0.6438
+  },
+  "features_base": [
+    "time_in_hospital",
+    "n_lab_procedures",
+    "n_procedures",
+    "n_medications",
+    "n_outpatient",
+    "n_inpatient",
+    "n_emergency",
+    "age_enc",
+    "glucose_test_enc",
+    "A1Ctest_enc",
+    "change_enc",
+    "diabetes_med_enc",
+    "medical_specialty_enc",
+    "diag_1_enc",
+    "diag_2_enc",
+    "diag_3_enc"
+  ],
+  "features_derived": [
+    "complexity",
+    "utilizacion_prev",
+    "proc_per_day",
+    "med_intensity",
+    "risk_score_base"
+  ],
+  "features_ext": [
+    "time_in_hospital",
+    "n_lab_procedures",
+    "n_procedures",
+    "n_medications",
+    "n_outpatient",
+    "n_inpatient",
+    "n_emergency",
+    "age_enc",
+    "glucose_test_enc",
+    "A1Ctest_enc",
+    "change_enc",
+    "diabetes_med_enc",
+    "medical_specialty_enc",
+    "diag_1_enc",
+    "diag_2_enc",
+    "diag_3_enc",
+    "complexity",
+    "utilizacion_prev",
+    "proc_per_day",
+    "med_intensity",
+    "risk_score_base"
+  ],
+  "thresholds": {
+    "low_max": 0.35,
+    "mod_max": 0.55,
+    "clinical": 0.42
+  }
+}
