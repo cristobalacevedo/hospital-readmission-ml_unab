@@ -112,7 +112,7 @@ Sección de exámenes y medicamentos, diagnósticos, botón de predicción y pie
 ### 6. Resultado de Predicción
 Panel de resultado tras ejecutar la predicción, mostrando el nivel de riesgo, probabilidad de readmisión, recomendación clínica y los factores más influyentes según SHAP.
 
-![Resultado de Predicción](Capturas/prediccion.png)
+![Resultado de Predicción](Capturas/prediccion_6.png)
 
 ---
 

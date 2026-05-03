@@ -23,6 +23,7 @@
         <li><a href="#project">Proyecto</a></li>
         <li><a href="#predict">Predicción</a></li>
       </ul>
+      <button class="dark-toggle-btn" id="dark-toggle" aria-label="Activar modo oscuro" title="Modo oscuro / claro">🌙</button>
       <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
         <span></span><span></span><span></span>
       </button>
@@ -439,7 +440,7 @@
         </div>
 
         <!-- SHAP -->
-        <h4 class="shap-title">🧠 Factores más influyentes (SHAP)</h4>
+        <h4 class="shap-title">🧠 Top 5 factores más influyentes (SHAP)</h4>
         <p class="shap-subtitle">
           Barras azules aumentan el riesgo · Barras rojas lo reducen.
         </p>
@@ -466,6 +467,36 @@
       </div>
     </div>
   </footer>
+
+  <!-- ═══════════ MONITOR WIDGET ═══════════ -->
+  <aside class="monitor-widget" id="monitor-widget" aria-label="Monitor del modelo en tiempo real">
+    <div class="monitor-header" id="monitor-header" role="button" tabindex="0" aria-expanded="false" aria-controls="monitor-body">
+      <div class="monitor-dot loading" id="monitor-dot" aria-hidden="true"></div>
+      <span class="monitor-title">Monitor del Modelo</span>
+      <span class="monitor-chevron" id="monitor-chevron" aria-hidden="true">▼</span>
+    </div>
+    <div class="monitor-body" id="monitor-body" role="region" aria-live="polite">
+      <div class="monitor-alert-banner" id="monitor-alert-banner" style="display:none;" role="alert">
+        ⚠️ Posible deriva del modelo detectada
+      </div>
+      <div class="monitor-stat">
+        <span class="monitor-label">Prob. media (últ. 100)</span>
+        <span class="monitor-value" id="monitor-avg">—</span>
+      </div>
+      <div class="monitor-stat">
+        <span class="monitor-label">Total predicciones</span>
+        <span class="monitor-value" id="monitor-count">—</span>
+      </div>
+      <div class="monitor-thresh-bar">
+        <div class="monitor-thresh-fill" id="monitor-thresh-fill" style="width:0%"></div>
+      </div>
+      <div class="monitor-thresh-labels">
+        <span>0 %</span><span>↑ umbral 55 %</span><span>100 %</span>
+      </div>
+      <div class="monitor-updated" id="monitor-updated">Conectando…</div>
+    </div>
+  </aside>
+  <div class="shap-tooltip" id="shap-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <script src="landing.js"></script>
 </body>
